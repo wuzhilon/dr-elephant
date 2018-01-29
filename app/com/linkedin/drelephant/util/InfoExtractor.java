@@ -36,10 +36,6 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
 import models.AppResult;
-import scala.Option;
-import scala.Some;
-
-
 /**
  * InfoExtractor is responsible for retrieving information and context about a
  * job from the job's configuration
@@ -139,11 +135,13 @@ public class InfoExtractor {
     * @return The retrieved Spark properties
     */
   public static Properties retrieveSparkProperties(SparkApplicationData appData) {
-    Option<String> prop = appData.appConfigurationProperties().get(SPARK_EXTRA_JAVA_OPTIONS);
+    //Option<String> prop =  appData.appConfigurationProperties().get(SPARK_EXTRA_JAVA_OPTIONS);
+    //scala.collection.immutable.Map<String,String> map = appData.appConfigurationProperties();
+    String prop = String.valueOf(appData.getConf().get(SPARK_EXTRA_JAVA_OPTIONS));
     Properties properties = new Properties();
-    if (prop.isDefined()) {
+    if (prop != null) {
       try {
-        Map<String, String> javaOptions = Utils.parseJavaOptions(prop.get());
+        Map<String, String> javaOptions = Utils.parseJavaOptions(prop);
         for (String key : javaOptions.keySet()) {
           properties.setProperty(key, unescapeString(javaOptions.get(key)));
         }
